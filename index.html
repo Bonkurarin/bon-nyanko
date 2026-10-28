@@ -79,6 +79,9 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
 #ovStart::before{inset:0;background:#f6efe0}
 #ovStart::after{inset:0;background-size:auto 100%;background-position:center top}
 #ovStart .menu,#ovStart .hint{z-index:1}
+.news{position:absolute;left:50%;top:27.5%;transform:translateX(-50%);z-index:1;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:calc(var(--u)*2) calc(var(--u)*12);width:88%;padding:calc(var(--u)*3) calc(var(--u)*10);font-size:calc(var(--u)*15);line-height:1.5;color:var(--ink);background:rgba(255,253,246,.88);border:calc(var(--u)*2) solid var(--ink);border-radius:calc(var(--u)*10) calc(var(--u)*4) calc(var(--u)*10) calc(var(--u)*4)}
+.news b{font-weight:400;color:#fff;background:var(--green);padding:0 calc(var(--u)*8);border-radius:calc(var(--u)*4)}
+.menu{top:35%!important}
 .credit{display:grid;grid-template-columns:1fr auto;gap:calc(var(--u)*8) calc(var(--u)*14);margin:calc(var(--u)*14) 0 calc(var(--u)*20);align-items:baseline}
 .credit span:nth-child(odd){border-bottom:calc(var(--u)*3) solid var(--g,var(--ink));justify-self:start}
 .credit span:nth-child(even){font-size:calc(var(--u)*24)}
@@ -124,6 +127,11 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
     <button id="btnPunch" class="wob" disabled>ボンパンチ!!</button>
 
     <div id="ovStart" class="ov">
+      <div class="news" role="note">
+        <b>お知らせ</b>
+        <span>制作 2026年10月20日</span>
+        <span>公開 2026年10月29日</span>
+      </div>
       <div class="menu">
         <button id="btnStart" class="wob primary">はじめから</button>
         <button id="btnCont" class="wob plain" hidden>つづきから</button>
