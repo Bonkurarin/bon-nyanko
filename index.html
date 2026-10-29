@@ -44,6 +44,8 @@ body{
 button{font-family:var(--font);color:var(--ink);cursor:pointer}
 button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:calc(var(--u)*2)}
 .wob{border:calc(var(--u)*2.5) solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px;background:var(--paper)}
+#bgmName{z-index:4;position:absolute;top:calc(var(--u)*48);right:calc(var(--u)*10);pointer-events:none;font-size:calc(var(--u)*14);line-height:1.2;padding:calc(var(--u)*2) calc(var(--u)*8);background:rgba(248,246,239,.88);border-radius:calc(var(--u)*10);color:var(--ink)}
+#bgmName.off{opacity:.4}
 #tools{z-index:4;position:absolute;top:calc(var(--u)*7);right:calc(var(--u)*10);display:flex;gap:calc(var(--u)*8)}
 #tools button{width:calc(var(--u)*36);height:calc(var(--u)*36);padding:0;display:grid;place-items:center}
 #tools svg{width:62%;height:62%;stroke:var(--ink);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
@@ -92,6 +94,11 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
 .credit{display:grid;grid-template-columns:1fr auto;gap:calc(var(--u)*8) calc(var(--u)*14);margin:calc(var(--u)*14) 0 calc(var(--u)*20);align-items:baseline}
 .credit span:nth-child(odd){border-bottom:calc(var(--u)*3) solid var(--g,var(--ink));justify-self:start}
 .credit span:nth-child(even){font-size:calc(var(--u)*24)}
+#ovRank{z-index:5}
+.rank{display:grid;grid-template-columns:2.2em 1fr auto;gap:calc(var(--u)*3) calc(var(--u)*10);margin:calc(var(--u)*10) 0 calc(var(--u)*14);text-align:left;font-size:calc(var(--u)*19)}
+.rank .me{background:var(--orb)}
+.rank .none{grid-column:1/-1;text-align:center;opacity:.6}
+#nameIn{font:inherit;font-size:calc(var(--u)*20);width:55%;padding:calc(var(--u)*3) calc(var(--u)*8);border:calc(var(--u)*2.5) solid var(--ink);border-radius:calc(var(--u)*8);background:#fff;color:var(--ink)}
 .card{width:84%;padding:calc(var(--u)*24) calc(var(--u)*26);box-sizing:border-box;font-size:calc(var(--u)*19);line-height:1.55}
 .card h1{margin:0 0 calc(var(--u)*10);font-size:calc(var(--u)*42);line-height:1.12;font-weight:400;text-wrap:balance}
 .card h2{margin:0 0 calc(var(--u)*8);font-size:calc(var(--u)*34);line-height:1.2;font-weight:400}
@@ -112,7 +119,7 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
       <dl>
         <dt style="--g:var(--green)">うごかす</dt><dd>マウスを動かす（クリック不要）／矢印キー・WASD</dd>
         <dt style="--g:var(--green)">はね返す</dt><dd>ネコをねらうビームの前に立つと、緑の光で打ち返せる</dd>
-        <dt style="--g:var(--orb)">たすける</dt><dd>玉に近づいて「たすける」ボタン(Eキー)。少しの間うごけない。ビームに当たると失敗</dd>
+        <dt style="--g:var(--orb)">ぱちんこ</dt><dd>光る玉のネコを助ける。「ぱちんこ」ボタン(Eキー)のあと、画面をひっぱってはなすと玉が飛ぶ。当てるとネコが助かる。ねらっている間はうごけず、ビームに当たると失敗</dd>
         <dt style="--g:var(--ink)">ボンパンチ</dt><dd>はね返しを4回ためると使える</dd>
       </dl>
     </div>
@@ -130,7 +137,8 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
         <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>
       </button>
     </div>
-    <button id="btnRescue" class="wob" disabled>たすける</button>
+    <div id="bgmName">♪ ボン&amp;キャッツ</div>
+    <button id="btnRescue" class="wob" disabled>ぱちんこ</button>
     <button id="btnPunch" class="wob" disabled>ボンパンチ!!</button>
 
     <div id="ovStart" class="ov">
@@ -142,6 +150,7 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
       <div class="menu">
         <button id="btnStart" class="wob primary">はじめから</button>
         <button id="btnCont" class="wob plain" hidden>つづきから</button>
+        <button id="btnRank" class="wob plain">ランキング</button>
         <button id="btnCredits" class="wob plain">つくったひと</button>
       </div>
       <p class="hint">マウス・ドラッグ・矢印キーで動かして、ビームをはね返そう</p>
@@ -156,6 +165,15 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
           <span style="--g:var(--alien)">プログラム した ひと(？)</span><span>Claude</span>
         </div>
         <button id="btnCreditsBack" class="wob primary">もどる</button>
+      </div>
+    </div>
+
+    <div id="ovRank" class="ov" hidden>
+      <div class="card wob" style="width:84%;text-align:center">
+        <h2>ランキング</h2>
+        <p class="note" style="margin:0">なまえ <input id="nameIn" maxlength="8" placeholder="モブボン" autocomplete="off"></p>
+        <div id="rankList" class="rank"></div>
+        <button id="btnRankBack" class="wob primary">もどる</button>
       </div>
     </div>
 
@@ -176,6 +194,7 @@ button:focus-visible{outline:calc(var(--u)*3) solid var(--alien);outline-offset:
         <p id="oInfo"></p>
         <div style="display:flex;gap:calc(var(--u)*12);justify-content:center;flex-wrap:wrap">
           <button id="btnRetry" class="wob primary">もういちど</button>
+          <button id="btnRank2" class="wob primary" style="background:var(--paper);color:var(--ink)">ランキング</button>
           <button id="btnTitle2" class="wob primary" style="background:var(--paper);color:var(--ink)">タイトルへ</button>
         </div>
       </div>
@@ -532,7 +551,7 @@ function drawBon(c) {
 }
 
 /* ---------- state ---------- */
-const G = { state: 'title', time: 0, boil: 0, wave: 0, score: 0, best: 0, combo: 0, gauge: 0, pulse: 0, cats: [], occ: [], ufos: [], bolts: [], paws: [], parts: [], escapes: [], bannerT: 0, banner: '', sub: '', shake: 0, flash: 0, clearT: 0, hopT: 5, nid: 1, rs: null };
+const G = { state: 'title', time: 0, boil: 0, wave: 0, score: 0, best: 0, combo: 0, gauge: 0, pulse: 0, cats: [], occ: [], ufos: [], bolts: [], paws: [], parts: [], escapes: [], bannerT: 0, banner: '', sub: '', shake: 0, flash: 0, clearT: 0, hopT: 5, nid: 1, rs: null, shots: [], cd: 0 };
 const bon = { x: 270, y: 800, tx: 270, ty: 800, vx: 0, swing: 0 };
 try { G.best = +localStorage.getItem('bon-ufo-best') || 0; } catch (e) {}
 
@@ -641,21 +660,30 @@ function capture(cat, ufo) {
   burst(cat.x, cat.y, [ORB, '#fff'], 14, 200); ring(cat.x, cat.y, ORB, 10, 60, .45); pop(cat.x, cat.y - 36, 'ひゃっ!', INK, 26);
   SFX.abduct(); SFX.sadMeow();
 }
-const RESCUE_T = 1.1, RESCUE_RANGE = 135;
-function rescueCandidate() {
-  const bc = bonCircle(); let best = null, bd = 1e9;
-  for (const c of G.cats) if (c.state === 'orb') { const d = Math.hypot(c.x - bc.x, c.y - bc.y); if (d < bc.r + RESCUE_RANGE && d < bd) { best = c; bd = d; } }
-  return best;
-}
+const SLING = { MAXPULL: 150, MINPULL: 26, G: 760, CD: .7, R: 9 };
+const anyOrb = () => G.cats.some(c => c.state === 'orb');
 function rescueStart() {
   if (G.state !== 'play') return;
-  if (G.rs) { rescueCancel(false); return; }
-  const c = rescueCandidate(); if (!c) return;
-  G.rs = { cat: c, p: 0 }; bon.tx = bon.x; bon.ty = bon.y; SFX.click();
+  if (G.rs) { G.rs = null; return; }
+  if (G.cd > 0 || !anyOrb()) return;
+  G.rs = { drag: false, sx: 0, sy: 0, dx: 0, dy: -1, pull: 0 }; bon.tx = bon.x; bon.ty = bon.y; SFX.click();
 }
 function rescueCancel(hit) {
-  if (!G.rs) return; const c = G.rs.cat; G.rs = null;
-  if (hit) { const bc = bonCircle(); pop(bc.x, bc.y - bc.r - 8, 'いたっ! しっぱい', '#ff3d8b', 26, 1); G.shake = Math.max(G.shake, 5); ring(bc.x, bc.y, '#ff3d8b', bc.r * .6, bc.r * 1.6, .35); SFX.hit(); }
+  if (!G.rs) return; G.rs = null;
+  if (hit) { const bc = bonCircle(); G.cd = .6; pop(bc.x, bc.y - bc.r - 8, 'いたっ! しっぱい', '#ff3d8b', 26, 1); G.shake = Math.max(G.shake, 5); ring(bc.x, bc.y, '#ff3d8b', bc.r * .6, bc.r * 1.6, .35); SFX.hit(); }
+}
+function aimSet(e, start) {
+  const a = G.rs; if (!a) return; const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
+  if (start) { a.sx = x; a.sy = y; a.drag = true; a.pull = 0; return; }
+  const vx = a.sx - x, vy = a.sy - y, l = Math.hypot(vx, vy);
+  if (l > 3) { a.dx = vx / l; a.dy = vy / l; } a.pull = Math.min(l, SLING.MAXPULL);
+}
+const slingPoint = () => { const o = bonCircle(), a = G.rs; return { x: o.x - a.dx * a.pull * .55, y: o.y - o.r * .3 - a.dy * a.pull * .55 }; };
+function aimFire() {
+  const a = G.rs; if (!a) return; a.drag = false;
+  if (a.pull < SLING.MINPULL) { a.pull = 0; return; }
+  const p = slingPoint(), sp = 480 + 820 * a.pull / SLING.MAXPULL;
+  G.shots.push({ x: p.x, y: p.y, vx: a.dx * sp, vy: a.dy * sp, t: 0 }); G.rs = null; G.cd = SLING.CD; SFX.fire(); SFX.whoosh();
 }
 function rescue(cat, byPunch) {
   cat.owner = null; hopTo(cat, freeSpot({ x: cat.x, y: cat.y }), .75, 60);
@@ -788,13 +816,15 @@ function update(dt) {
   bon.x = clamp(bon.x, 36, W - 36); bon.y = clamp(bon.y, BON_YMIN, BON_YMAX);
   bon.vx += ((bon.x - px) / Math.max(dt, .001) - bon.vx) * Math.min(1, dt * 12);
   const bc = bonCircle();
-  // rescue progress
-  if (G.rs) {
-    const r = G.rs, c = r.cat;
-    if (G.state !== 'play' || c.state !== 'orb' || Math.hypot(c.x - bc.x, c.y - bc.y) > bc.r + RESCUE_RANGE + 40) G.rs = null;
-    else { r.p += dt / RESCUE_T; if (Math.random() < dt * 14) puff(c.x + rr2(20), c.y + rr2(20), 3, .3); if (r.p >= 1) { G.rs = null; rescue(c, false); } }
+  // slingshot
+  if (G.rs && (G.state !== 'play' || !anyOrb())) G.rs = null;
+  G.cd = Math.max(0, G.cd - dt);
+  for (const sh of G.shots) {
+    sh.t += dt; sh.vy += SLING.G * dt; sh.x += sh.vx * dt; sh.y += sh.vy * dt;
+    for (const c of G.cats) if (c.state === 'orb' && Math.hypot(c.x - sh.x, c.y - sh.y) < 46 + SLING.R) { rescue(c, false); G.score += 30; pop(c.x, c.y - 66, 'ナイスショット!', '#ff3d8b', 26, 1.1); sh.dead = true; break; }
+    if (sh.y > H + 40 || sh.x < -40 || sh.x > W + 40 || sh.y < -90 || sh.t > 3.5) sh.dead = true;
   }
-  if (!G.rs && G.state !== 'play') G.rs = null;
+  G.shots = G.shots.filter(sh => !sh.dead);
 
   // cats
   G.hopT -= dt;
@@ -806,7 +836,7 @@ function update(dt) {
       if (k >= 1) { c.state = 'spot'; c.x = sp.x; c.y = sp.y; puff(c.x, c.y + 10, 10, .4); SFX.land(); }
     } else if (c.state === 'spot') { c.x = SPOTS[c.spot].x; c.y = SPOTS[c.spot].y; }
     else if (c.state === 'orb') {
-      c.t += dt; c.y -= c.v * (G.rs && G.rs.cat === c ? .3 : 1) * dt; const o = c.owner; c.x += (o.x - c.x) * Math.min(1, .9 * dt);
+      c.t += dt; c.y -= c.v * (G.rs ? .3 : 1) * dt; const o = c.owner; c.x += (o.x - c.x) * Math.min(1, .9 * dt);
       if (c.y < o.y + o.by + 14) { c.state = 'gone'; o.loot.push(c); o.flash = .45; ring(o.x, o.y + o.by, ORB, 20, 90, .4); SFX.absorbed(); }
     }
   }
@@ -881,10 +911,6 @@ function draw() {
     }
   });
   G.cats.forEach(cat => { if (cat.state === 'orb') { seedFor(200 + cat.id); drawOrb(c, cat.x, cat.y, cat, G.time + cat.id); } });
-  G.cats.forEach(cat => { if (cat.state === 'orb' && G.state === 'play') {
-    const rc = G.rs ? G.rs.cat === cat : rescueCandidate() === cat;
-    if (rc) { c.save(); c.strokeStyle = G.rs ? GREEN : '#fff'; c.lineWidth = 3.5; c.lineCap = 'round'; if (!G.rs) c.setLineDash([6, 6]); c.beginPath(); c.arc(cat.x, cat.y, 44, -PI / 2, -PI / 2 + 6.2832 * (G.rs ? G.rs.p : 1)); c.stroke(); c.restore(); if (G.rs) txt(c, 'たすけ中…', cat.x, cat.y - 54, 20, GREEN, 'center'); }
-  } });
   c.drawImage(sc.front, 0, 0, W, H);
 
   // telegraph
@@ -901,7 +927,7 @@ function draw() {
   for (const e of G.escapes) { c.save(); c.translate(e.x, e.y); c.rotate(e.rot); seedFor(700); c.beginPath(); blob(c, 0, 0, 15, 20, .8, 12); paint(c, ALIEN, 2.6); c.fillStyle = INK; for (const s of [-1, 1]) { c.beginPath(); c.ellipse(s * 6.5, 2, 5.4, 3, s * .5, 0, 6.3); c.fill(); } c.restore(); if (e.t < .8) txt(c, 'ぴゅー', e.x + 24, e.y - 14, 22, ALIEN, 'left'); }
   G.bolts.forEach(b => drawBolt(c, b));
   G.paws.forEach(p => { if (p.delay <= 0) drawPaw(c, p); });
-  drawBon(c);
+  drawBon(c); drawSling(c);
 
   // particles
   for (const p of G.parts) {
@@ -935,11 +961,27 @@ function drawHUD(c) {
   c.fillStyle = ready ? (Math.floor(G.time * 8) % 2 ? GREEN : '#46d27c') : GREEN; c.fillRect(105, 55, 154 * G.gauge / 100, 12);
   seedFor(5); poly(c, [[104, 54], [260, 54], [260, 68], [104, 68]], .6); c.strokeStyle = INK; c.lineWidth = 2.2; c.stroke();
   if (ready) txt(c, 'いまだ!!', 270, 68, 19, GREEN, 'left', false);
-  txt(c, 'WAVE ' + G.wave, 524, 68, 20, INK, 'right', false);
+  txt(c, 'WAVE ' + G.wave, 524, 96, 20, INK, 'right', false);
   $('btnPunch').disabled = !(ready && G.state === 'play');
-  const rb = $('btnRescue'), near = G.state === 'play' && !!rescueCandidate(), any = G.cats.some(c => c.state === 'orb');
-  rb.disabled = !(G.state === 'play' && (G.rs || near)); rb.classList.toggle('busy', !!G.rs);
-  const lab = G.rs ? 'やめる' : near ? 'たすける' : any && G.state === 'play' ? 'とおい…' : 'たすける'; if (rb.textContent !== lab) rb.textContent = lab;
+  const rb = $('btnRescue'), any = anyOrb();
+  rb.disabled = !(G.state === 'play' && (G.rs || (any && G.cd <= 0))); rb.classList.toggle('busy', !!G.rs);
+  const lab = G.rs ? 'やめる' : G.cd > 0 && G.state === 'play' ? 'じゅんび…' : 'ぱちんこ'; if (rb.textContent !== lab) rb.textContent = lab;
+}
+function drawSling(c) {
+  for (const sh of G.shots) { c.save(); c.fillStyle = '#fff'; c.strokeStyle = INK; c.lineWidth = 2.8; c.beginPath(); c.arc(sh.x, sh.y, SLING.R, 0, 6.3); c.fill(); c.stroke(); c.restore(); }
+  const a = G.rs; if (!a || G.state !== 'play') return;
+  const o = bonCircle(), p = slingPoint(), fy = o.y - o.r * .3, tl = { x: o.x - 17, y: fy - 22 }, tr = { x: o.x + 17, y: fy - 22 };
+  c.save(); c.lineCap = 'round'; c.lineJoin = 'round';
+  c.strokeStyle = INK; c.lineWidth = 6; c.beginPath(); c.moveTo(tl.x, tl.y); c.lineTo(o.x, fy); c.lineTo(tr.x, tr.y); c.moveTo(o.x, fy); c.lineTo(o.x, fy + 14); c.stroke();
+  if (a.pull >= SLING.MINPULL) {
+    const sp = 480 + 820 * a.pull / SLING.MAXPULL; let x = p.x, y = p.y, vx = a.dx * sp, vy = a.dy * sp;
+    c.fillStyle = 'rgba(255,255,255,.95)'; c.strokeStyle = INK; c.lineWidth = 1.6;
+    for (let i = 0; i < 26; i++) { for (let k = 0; k < 2; k++) { vy += SLING.G * .02; x += vx * .02; y += vy * .02; } if (i % 2 === 0) { c.beginPath(); c.arc(x, y, 4.6 - i * .08, 0, 6.3); c.fill(); c.stroke(); } }
+  }
+  c.strokeStyle = '#c2255c'; c.lineWidth = 4.5; c.beginPath(); c.moveTo(tl.x, tl.y); c.lineTo(p.x, p.y); c.lineTo(tr.x, tr.y); c.stroke();
+  c.fillStyle = '#fff'; c.strokeStyle = INK; c.lineWidth = 2.8; c.beginPath(); c.arc(p.x, p.y, SLING.R, 0, 6.3); c.fill(); c.stroke();
+  c.restore();
+  txt(c, a.pull < SLING.MINPULL ? 'ひっぱって はなす!' : 'はなして ぱちん!', o.x, o.y - o.r - 52, 22, '#c2255c', 'center');
 }
 function drawBanner(c) {
   if (G.bannerT <= 0 || (G.state !== 'play' && G.state !== 'clear')) return;
@@ -948,6 +990,34 @@ function drawBanner(c) {
   if (G.sub) txt(c, G.sub, W / 2, y + 44, 28, INK, 'center');
   c.restore();
 }
+
+/* ---------- ranking (this device only) ---------- */
+const RANK_KEY = 'bon-ufo-rank', NAME_KEY = 'bon-ufo-name';
+function loadRank() { try { const v = JSON.parse(localStorage.getItem(RANK_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+function playerName() { try { return (localStorage.getItem(NAME_KEY) || '').trim() || 'モブボン'; } catch (e) { return 'モブボン'; } }
+function addRank(score, wave) {
+  if (score <= 0) return 0;
+  const d = new Date(), e = { s: score, w: wave, n: playerName(), d: (d.getMonth() + 1) + '/' + d.getDate(), id: Date.now() };
+  const list = loadRank(); list.push(e); list.sort((a, b) => b.s - a.s || a.id - b.id);
+  const top = list.slice(0, 10); try { localStorage.setItem(RANK_KEY, JSON.stringify(top)); } catch (er) {}
+  const i = top.findIndex(x => x.id === e.id); return i < 0 ? 0 : i + 1;
+}
+function showRank(mark) {
+  const box = $('rankList'), list = loadRank(); box.textContent = '';
+  if (!list.length) { const d = document.createElement('span'); d.className = 'none'; d.textContent = 'まだ だれも いないよ'; box.appendChild(d); }
+  list.forEach((e, i) => {
+    const cls = e.id === mark ? 'me' : '';
+    [ (i + 1) + '位', e.n + '  (' + e.d + ')', e.s + '  W' + e.w ].forEach((t, k) => { const sp = document.createElement('span'); sp.textContent = t; if (cls) sp.className = cls; if (k === 2) sp.style.textAlign = 'right'; box.appendChild(sp); });
+  });
+  $('nameIn').value = playerName() === 'モブボン' ? '' : playerName();
+  $('ovRank').hidden = false;
+}
+$('nameIn').addEventListener('input', () => { try { localStorage.setItem(NAME_KEY, $('nameIn').value.slice(0, 8)); } catch (e) {} });
+$('nameIn').addEventListener('keydown', e => e.stopPropagation());
+$('btnRank').addEventListener('click', () => showRank());
+$('btnRank2').addEventListener('click', () => showRank(lastRankId));
+$('btnRankBack').addEventListener('click', () => { $('ovRank').hidden = true; });
+let lastRankId = 0;
 
 /* ---------- flow ---------- */
 function setupTitle() {
@@ -961,22 +1031,23 @@ function writeSave() { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ wav
 function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
 function showTitle() {
   setupTitle();
-  for (const id of ['ovPause', 'ovOver', 'ovCredits']) $(id).hidden = true;
+  for (const id of ['ovPause', 'ovOver', 'ovCredits', 'ovRank']) $(id).hidden = true;
   $('btnCont').hidden = !loadSave(); $('ovStart').hidden = false;
-  $('btnPause').setAttribute('aria-pressed', 'false'); $('btnPause').hidden = true; $('btnPunch').disabled = true; $('btnRescue').disabled = true; G.rs = null; $('bestOut').textContent = G.best;
+  $('btnPause').setAttribute('aria-pressed', 'false'); $('btnPause').hidden = true; $('btnPunch').disabled = true; $('btnRescue').disabled = true; G.rs = null; G.shots = []; G.cd = 0; $('bestOut').textContent = G.best;
 }
 function startGame(cont) {
   const sv = cont ? loadSave() : null; if (!cont) clearSave();
-  ac(); SFX.start(); G.rs = null; initCats(sv && sv.cats && sv.cats.length ? sv.cats : undefined); G.score = sv ? sv.score : 0; G.gauge = 0; G.combo = 0; G.hopT = 5; G.parts = []; G.escapes = [];
+  ac(); SFX.start(); G.rs = null; G.shots = []; G.cd = 0; initCats(sv && sv.cats && sv.cats.length ? sv.cats : undefined); G.score = sv ? sv.score : 0; G.gauge = 0; G.combo = 0; G.hopT = 5; G.parts = []; G.escapes = [];
   bon.x = bon.tx = 270; bon.y = bon.ty = 800; startWave(sv ? sv.wave : 1);
-  $('ovStart').hidden = true; $('ovOver').hidden = true; $('ovPause').hidden = true; $('ovCredits').hidden = true; $('btnPause').hidden = false;
+  $('ovStart').hidden = true; $('ovOver').hidden = true; $('ovPause').hidden = true; $('ovCredits').hidden = true; $('ovRank').hidden = true; $('btnPause').hidden = false;
   if (bgmOn) BGM.play();
 }
 function gameOver() {
   G.state = 'over'; SFX.over(); clearSave();
   const isBest = G.score > G.best; if (isBest) { G.best = G.score; try { localStorage.setItem('bon-ufo-best', String(G.best)); } catch (e) {} }
+  const rk = addRank(G.score, G.wave); const lst = loadRank(); lastRankId = rk ? (lst[rk - 1] || {}).id : 0;
   $('oScore').textContent = G.score; $('bestOut').textContent = G.best;
-  $('oInfo').textContent = 'WAVE ' + G.wave + ' まで ・ ハイスコア ' + G.best + (isBest ? '（更新!）' : '');
+  $('oInfo').textContent = 'WAVE ' + G.wave + ' まで ・ ハイスコア ' + G.best + (isBest ? '（更新!）' : '') + (rk ? ' ・ ランキング ' + rk + '位!' : '');
   $('ovOver').hidden = false; $('btnRetry').focus({ preventScroll: true });
 }
 function setPause(p) {
@@ -997,7 +1068,7 @@ $('btnPunch').addEventListener('click', doPunch);
 $('btnRescue').addEventListener('click', rescueStart);
 document.addEventListener('click', e => { if (e.target.closest && e.target.closest('button')) SFX.click(); }, true);
 $('btnBgm').addEventListener('click', () => {
-  bgmOn = !bgmOn; $('btnBgm').setAttribute('aria-pressed', String(bgmOn));
+  bgmOn = !bgmOn; $('btnBgm').setAttribute('aria-pressed', String(bgmOn)); $('bgmName').classList.toggle('off', !bgmOn);
   if (!bgmOn) BGM.pause(); else BGM.play();
 });
 $('btnSe').addEventListener('click', () => {
@@ -1012,10 +1083,10 @@ function setTarget(e) {
   const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
   bon.tx = clamp(x, 36, W - 36); bon.ty = clamp(e.pointerType === 'mouse' ? y + 50 : y - 10, BON_YMIN, BON_YMAX);
 }
-stage.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; ptr.down = true; if (G.state === 'play') setTarget(e); try { stage.setPointerCapture(e.pointerId); } catch (_) {} });
-stage.addEventListener('pointermove', e => { if (G.state !== 'play') return; if (e.pointerType === 'mouse' || ptr.down) setTarget(e); });
+stage.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; ptr.down = true; if (G.state === 'play') { if (G.rs) aimSet(e, true); else setTarget(e); } try { stage.setPointerCapture(e.pointerId); } catch (_) {} });
+stage.addEventListener('pointermove', e => { if (G.state !== 'play') return; if (G.rs) { if (ptr.down && G.rs.drag) aimSet(e); return; } if (e.pointerType === 'mouse' || ptr.down) setTarget(e); });
 const up = () => { ptr.down = false; };
-stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+stage.addEventListener('pointerup', () => { if (G.rs && G.rs.drag && G.state === 'play') aimFire(); up(); }); stage.addEventListener('pointercancel', () => { if (G.rs) { G.rs.drag = false; G.rs.pull = 0; } up(); });
 addEventListener('keydown', e => {
   if (e.key === ' ' || e.key === 'Spacebar') { if (G.state === 'play') { e.preventDefault(); doPunch(); } return; }
   if (e.key === 'e' || e.key === 'E' || e.key === 'Enter') { if (G.state === 'play') { e.preventDefault(); rescueStart(); } return; }
@@ -1036,7 +1107,7 @@ function frame(now) {
 setupTitle(); $('btnCont').hidden = !loadSave(); $('bestOut').textContent = G.best;
 addEventListener('pointerdown', () => { if (bgmOn && G.state !== 'pause') BGM.play(); });
 addEventListener('keydown', () => { if (bgmOn && G.state !== 'pause') BGM.play(); });
-window.__game = { BGM, G, bon, startGame, showTitle, doPunch, SPOTS };
+window.__game = { BGM, G, bon, startGame, showTitle, doPunch, SPOTS, gameOver };
 requestAnimationFrame(frame);
 })();
 </script>
